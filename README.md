@@ -1,4 +1,4 @@
-# Python Scripts
+# py-scripts
 
 <img src="img/py_logo.png" height="200">
 
