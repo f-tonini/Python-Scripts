@@ -1,4 +1,4 @@
-# py-scripts
+# py-geo
 
 <img src="img/py_logo.png" height="200">
 
