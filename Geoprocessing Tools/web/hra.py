@@ -167,7 +167,7 @@ if __name__ == '__main__':
 	args = GetArgs(layer_dir, stressors_dir, criteria_dir, ratings_dir, grid_size, risk_eq, decay_eq, max_rating, max_stress, subregions_shp, workspace_dir)
 
 	#Run the InVEST model
-	arcpy.AddMessage("Running hra model...")
+	arcpy.AddMessage("Running InVEST model ...")
 	natcap.invest.habitat_risk_assessment.hra.execute(args)
 
 	#remove entire folder and all its content
@@ -182,7 +182,6 @@ if __name__ == '__main__':
 	arcpy.AddMessage("Creating output zipped folder with all maps output...")
 	#output directory from InVEST model
 	maps_dir = os.path.join(arcpy.env.scratchFolder, 'output', 'Maps') 
-	out_maps_zip = os.path.join(arcpy.env.scratchFolder, 'relative_habitat_risk.zip')
 	#zip_files(maps_dir, out_maps_zip, ['*.shp', '*.shx', '*.dbf', '*.prj'])
 	out_maps_zip = os.path.join(arcpy.env.scratchFolder, 'habitat_risk_maps.zip')
 	zip_folder(maps_dir, out_maps_zip)

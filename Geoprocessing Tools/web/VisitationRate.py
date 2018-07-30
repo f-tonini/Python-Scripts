@@ -117,7 +117,17 @@ if __name__ == '__main__':
 	if aoi_path_zip:
 		shutil.rmtree(os.path.join(arcpy.env.scratchFolder, "AOI"))
 
+	### Create output maps zipped file ###
+	arcpy.AddMessage("Creating output zipped folder with all output...")
+	files = [os.path.join(arcpy.env.scratchFolder, file) for file in os.listdir(arcpy.env.scratchFolder) if (os.path.isfile(os.path.join(arcpy.env.scratchFolder, file)) and not file.endswith((".csv", ".xml")))]
+	#create zipfile object as speficify 'w' for 'write' mode
+	myzip = zipfile.ZipFile(os.path.join(arcpy.env.scratchFolder, 'output_maps.zip'), 'w')
+	# LOOP through the file list and add to the zip file
+	for zip_file in files:
+		myzip.write(zip_file, os.path.basename(zip_file), compress_type=zipfile.ZIP_DEFLATED)
+	
 	#### Set Parameters ####
 	arcpy.SetParameterAsText(6, out_pud_shp)
 	arcpy.SetParameterAsText(7, out_monthlyTab_csv)
+	arcpy.SetParameterAsText(8, os.path.join(arcpy.env.scratchFolder, 'output_maps.zip'))
 

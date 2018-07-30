@@ -190,19 +190,27 @@ if __name__ == '__main__':
 			arcpy.AddError(ex.args[0])
 
 	#Create output folder to be zipped with all output maps inside it
-	out_dir = os.path.join(arcpy.env.scratchFolder, "Maps")
-	if not os.path.exists(out_dir):
-		os.makedirs(out_dir)
+	#out_dir = os.path.join(arcpy.env.scratchFolder, "Maps")
+	#if not os.path.exists(out_dir):
+	#	os.makedirs(out_dir)
 
 	#List all files that are NOT of folder type and loop through it to copy each file into output maps folder
-	files = [file for file in os.listdir(arcpy.env.scratchFolder) if os.path.isfile(os.path.join(arcpy.env.scratchFolder, file))]
-	for file in files:
-		shutil.copy(file, out_dir)
-
+	#files = [file for file in os.listdir(arcpy.env.scratchFolder) if os.path.isfile(os.path.join(arcpy.env.scratchFolder, file))]
+	#for file in files:
+    #	shutil.copy(file, out_dir)
+    
 	### Create output maps zipped file ###
 	arcpy.AddMessage("Creating output zipped folder with all maps output...")
+	files = [file for file in os.listdir(arcpy.env.scratchFolder) if (os.path.isfile(os.path.join(arcpy.env.scratchFolder, file)) and not file.endswith(".xml"))]
+	#create zipfile object as speficify 'w' for 'write' mode
+	myzip = zipfile.ZipFile(os.path.join(arcpy.env.scratchFolder, 'output_maps.zip'), 'w')
+	# LOOP through the file list and add to the zip file
+	for zip_file in files:
+		myzip.write(zip_file, compress_type=zipfile.ZIP_DEFLATED)
+	
 	#output directory from InVEST model
-	out_maps_zip = os.path.join(arcpy.env.scratchFolder, 'output_maps.zip')
-	zip_folder(os.path.join(arcpy.env.scratchFolder, out_dir), out_maps_zip)
-	shutil.rmtree(os.path.join(arcpy.env.scratchFolder, out_dir))		
-	arcpy.SetParameterAsText(15, out_maps_zip)
+	#out_maps_zip = os.path.join(arcpy.env.scratchFolder, 'output_maps.zip')
+	#zip_folder(os.path.join(arcpy.env.scratchFolder, out_dir), out_maps_zip)
+	#shutil.rmtree(os.path.join(arcpy.env.scratchFolder, out_dir))		
+	#arcpy.SetParameterAsText(15, out_maps_zip)
+	arcpy.SetParameterAsText(15, os.path.join(arcpy.env.scratchFolder, 'output_maps.zip'))

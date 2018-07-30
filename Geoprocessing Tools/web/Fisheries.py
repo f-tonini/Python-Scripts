@@ -209,6 +209,19 @@ if __name__ == '__main__':
 	arcpy.SetParameter(16, out_fl_harv)
 	arcpy.SetParameter(17, outTable_CSV)
 	arcpy.SetParameter(18, dst)
+
+	### Create output maps zipped file ###
+	arcpy.AddMessage("Creating output zipped folder with all maps output...")
+	out_dir = os.path.join(arcpy.env.scratchFolder, "output")
+	files = [os.path.join(out_dir, file) for file in os.listdir(out_dir) if not file.endswith((".csv", ".lock"))]
+	#create zipfile object as speficify 'w' for 'write' mode
+	myzip = zipfile.ZipFile(os.path.join(arcpy.env.scratchFolder, 'output_files.zip'), 'w')
+	# LOOP through the file list and add to the zip file
+	for zip_file in files:
+		myzip.write(zip_file, os.path.basename(zip_file), compress_type=zipfile.ZIP_DEFLATED)  
+
+	#Set Parameter as InVEST output zip file
+	arcpy.SetParameter(19, os.path.join(arcpy.env.scratchFolder, 'output_files.zip'))
 	
 	#Remove intermediate files created by InVEST script
 	if migration_zip:

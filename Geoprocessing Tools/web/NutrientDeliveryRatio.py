@@ -106,6 +106,7 @@ if __name__ == '__main__':
 
 	args = GetArgs(dem, lulc, nutrient_runoff, watersheds, biophysical_table, threshold_flow_accumulation, k_param, subsurface_critical_length_p, subsurface_critical_length_n, subsurface_eff_p, subsurface_eff_n)	
 	#Run the InVEST script with the arguments from GetArgs
+	arcpy.AddMessage("Running InVEST model ...")
 	natcap.invest.ndr.ndr.execute(args)
 
 	### Create output nutrient (P, N) discharge raster maps ###
@@ -126,7 +127,19 @@ if __name__ == '__main__':
 			arcpy.AddError(arcpy.GetMessages(2))
 		except Exception as ex:
 			arcpy.AddError(ex.args[0])
-	
+
+	### Create output maps zipped file ###
+	arcpy.AddMessage("Creating output zipped folder with all maps output...")
+	files = [file for file in os.listdir(arcpy.env.scratchFolder) if (os.path.isfile(os.path.join(arcpy.env.scratchFolder, file)) and not file.endswith(".xml"))]
+	#create zipfile object as speficify 'w' for 'write' mode
+	myzip = zipfile.ZipFile(os.path.join(arcpy.env.scratchFolder, 'output_maps.zip'), 'w')
+	# LOOP through the file list and add to the zip file
+	for zip_file in files:
+		myzip.write(zip_file, compress_type=zipfile.ZIP_DEFLATED)
+		
+	#output zipped folder with InVEST model output
+	arcpy.SetParameterAsText(13, os.path.join(arcpy.env.scratchFolder, 'output_maps.zip'))
+				
 	#Remove intermediate files created by InVEST script
 	shutil.rmtree(os.path.join(arcpy.env.scratchFolder, 'intermediate_outputs'))
 	#remove entire folder and all its content

@@ -1,6 +1,5 @@
 import arcpy
-import sys
-import os
+import sys, zipfile, os
 
 arcpy.env.overwriteOutput = True
 arcpy.env.outputCoordinateSystem = arcpy.SpatialReference(3857)

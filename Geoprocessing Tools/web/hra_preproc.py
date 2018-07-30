@@ -125,7 +125,7 @@ if __name__ == '__main__':
     args = GetArgs(layer_dir, stressors_dir, exposure_str, sensitivity_str, resilience_str, do_criteria_bool, criteria_dir, workspace_dir)
 
     #Run the InVEST model
-    arcpy.AddMessage("Running hra_preprocessor model...")
+	arcpy.AddMessage("Running InVEST model ...")
     natcap.invest.habitat_risk_assessment.hra_preprocessor.execute(args)
 
 	#remove entire folder and all its content

@@ -122,14 +122,29 @@ def PopCountDensity(inFeature, featureField, inCensus, censusField, index):
 		#Run the next block of code
 		#and output the feature class as the final shapefile.
 		#Output written to disk
-		result = arcpy.CopyFeatures_management(os.path.join(arcpy.env.scratchGDB, tempName), os.path.join(arcpy.env.scratchGDB, "FeatureCopy"))
+		result = arcpy.CopyFeatures_management(os.path.join(arcpy.env.scratchGDB, tempName), os.path.join(arcpy.env.scratchGDB, "PopMetrics"))
+		
 		#result = arcpy.FeatureClassToFeatureClass_conversion(os.path.join(arcpy.env.scratchGDB, tempName), arcpy.env.scratchGDB, os.path.basename(outFC), "", fieldMappings)
 		#Layer feature is created so that the result automatically displays in viewer once tool successfully runs
-		out_fl = arcpy.MakeFeatureLayer_management(result, os.path.join(arcpy.env.scratchGDB, "FC_layer"))
+		out_fl = arcpy.MakeFeatureLayer_management(result, os.path.join(arcpy.env.scratchGDB, "fl_pop"))
 		
+		# Execute FeatureClassToGeodatabase
+		arcpy.AddMessage("Converting Feature Class to Shapefile...")
+		arcpy.FeatureClassToShapefile_conversion(os.path.join(arcpy.env.scratchGDB, "PopMetrics"), arcpy.env.scratchFolder)
+
+		### Create output maps zipped file ###
+		arcpy.AddMessage("Creating output zipped folder with all output...")
+		files = [os.path.join(arcpy.env.scratchFolder, file) for file in os.listdir(arcpy.env.scratchFolder) if os.path.isfile(os.path.join(arcpy.env.scratchFolder, file))]
+		#create zipfile object as speficify 'w' for 'write' mode
+		myzip = zipfile.ZipFile(os.path.join(arcpy.env.scratchFolder, 'output_maps.zip'), 'w')
+		# LOOP through the file list and add to the zip file
+		for zip_file in files:
+			myzip.write(zip_file, os.path.basename(zip_file), compress_type=zipfile.ZIP_DEFLATED)
+
+	
 		### Set Parameters ####
 		arcpy.SetParameter(4, out_fl)
-
+		arcpy.SetParameter(5, os.path.join(arcpy.env.scratchFolder, 'output_maps.zip'))
 										  
 	except Exception:
 		e = sys.exc_info()[1]
